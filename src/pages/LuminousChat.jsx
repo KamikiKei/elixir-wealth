@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Sparkles, Brain, Target, TrendingUp, Send, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function aiAdvisor() {
+export default function LuminousChat() {
   const navigate = useNavigate();
   const [mode, setMode] = useState("analysis");
   const [mindsetType, setMindsetType] = useState("conservative_investor");
