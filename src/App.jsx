@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { supabase } from "@/lib/supabaseClient"; // 追加
 import Layout from "@/Layout";
 import Dashboard from "@/pages/Dashboard.jsx";
-import AddTransaction from "@/pages/AddTransaction";
+import AddTransaction from "@/pages/AddTransaction.jsx";
 import LuminousChat from "@/pages/LuminousChat"; 
 import Auth from "@/pages/Auth.jsx"; // 追加
 
