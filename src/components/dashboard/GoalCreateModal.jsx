@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { GoalService } from "@/services/GoalService"; // 新しい名前のサービスを読み込み
 import { Target, Plus } from "lucide-react";
 
