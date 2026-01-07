@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Button } from "@/components/ui/button.jsx";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/Button.jsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card.jsx";
 import { Brain, Sparkles, TrendingUp, AlertCircle, RefreshCw, Target } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton.jsx";
+import { Skeleton } from "@/components/ui/Skeleton.jsx";
 
 export default function AIAdvisor() {
   const [transactions, setTransactions] = useState([]);

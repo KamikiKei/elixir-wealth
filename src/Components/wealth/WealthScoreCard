@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, AlertCircle } from "lucide-react";
-import { Progress } from "@/components/ui/progress.jsx";
+import { Progress } from "@/Components/ui/Progress.jsx";
 
 export default function WealthScoreCard({ score, deviations, mindsetType }) {
   const mindsetLabels = {

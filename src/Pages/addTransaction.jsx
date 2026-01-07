@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
-import { supabase } from "@/lib/supabaseClient"; // Supabaseクライアント
-import { Button } from "@/components/ui/button.jsx";
-import { Input } from "@/components/ui/input.jsx";
-import { Label } from "@/components/ui/label.jsx";
-import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea.jsx";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
+import { supabase } from "@/lib/supabaseClient"; 
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input.jsx";
+import { Label } from "@/components/ui/Label.jsx";
+import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/Select"; 
+import { Textarea } from "@/components/ui/Textarea.jsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card.jsx";
 import { ArrowUp, ArrowDown, Save, RefreshCw, Camera, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

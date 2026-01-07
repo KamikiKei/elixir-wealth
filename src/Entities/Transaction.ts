@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient.jsx";
 
 export interface TransactionType {
   id?: string;
