@@ -27,7 +27,7 @@ export const Transaction = {
     return data;
   },
 
-  // AddTransactionで使用する作成メソッド
+  // addTransactionで使用する作成メソッド
   create: async (payload: TransactionType) => {
     const { data, error } = await supabase
       .from('transactions')

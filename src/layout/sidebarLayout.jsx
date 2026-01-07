@@ -8,7 +8,7 @@ const menuItems = [
   { id: "advisor", label: "AIアドバイザー", icon: BrainCircuit, path: "/advisor" },
 ];
 
-export default function SidebarLayout({ children }) {
+export default function sidebarLayout({ children }) {
   const location = useLocation();
 
   return (
