@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient"; // 追加
 import Layout from "@/Layout";
 import Dashboard from "@/pages/Dashboard.jsx";
 import AddTransaction from "@/pages/AddTransaction.jsx";
-import LuminousChat from "@/pages/LuminousChat"; 
+import LuminousChat from "@/pages/LuminousChat.jsx"; 
 import Auth from "@/pages/Auth.jsx"; // 追加
 
 function App() {
