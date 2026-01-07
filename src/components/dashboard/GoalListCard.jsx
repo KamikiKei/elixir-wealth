@@ -1,29 +1,26 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Progress } from "@/components/ui/Progress";
-import { Button } from "@/components/ui/Button";
-import { Target, Plus } from "lucide-react";
+import { Target } from "lucide-react";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/Skeleton";
+// ここで新しく作る「入力モーダル」を読み込みます
+import GoalCreateModal from "./GoalCreateModal.jsx";
 
-export default function SavingsGoals({ goals, isLoading }) {
+export default function GoalListCard({ goals, isLoading, onRefresh }) {
   if (isLoading) {
     return (
       <Card className="shadow-2xl border border-amber-900/20 bg-gradient-to-br from-slate-900/95 to-slate-950/95 backdrop-blur-sm">
         <CardHeader>
           <Skeleton className="h-6 w-24" />
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {Array(3).fill(0).map((_, i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-2 w-full" />
-                <Skeleton className="h-3 w-24" />
-              </div>
-            ))}
-          </div>
+        <CardContent className="space-y-4">
+          {Array(3).fill(0).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-2 w-full" />
+            </div>
+          ))}
         </CardContent>
       </Card>
     );
@@ -37,22 +34,19 @@ export default function SavingsGoals({ goals, isLoading }) {
             <Target className="w-5 h-5 text-amber-400" />
             貯蓄目標
           </CardTitle>
-          <Button size="sm" className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-slate-900 shadow-lg shadow-amber-900/50">
-            <Plus className="w-4 h-4 mr-1" />
-            追加
-          </Button>
+          {/* 追加ボタンをダイアログコンポーネントに置き換え */}
+          <GoalCreateModal onSuccess={onRefresh} />
         </div>
       </CardHeader>
       <CardContent>
-        {goals.length === 0 ? (
+        {(!goals || goals.length === 0) ? (
           <div className="text-center py-8">
             <Target className="w-12 h-12 text-slate-600 mx-auto mb-3" />
             <p className="text-slate-400">貯蓄目標がありません</p>
-            <p className="text-sm text-slate-500 mb-4">目標を設定して貯蓄を始めましょう</p>
-            <Button size="sm" className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-slate-900 shadow-lg shadow-amber-900/50">
-              <Plus className="w-4 h-4 mr-2" />
-              初回目標を設定
-            </Button>
+            <div className="mt-4">
+               {/* データがない時用のボタンもモーダルを呼び出すように */}
+               <GoalCreateModal onSuccess={onRefresh} />
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
@@ -66,12 +60,12 @@ export default function SavingsGoals({ goals, isLoading }) {
                     <div>
                       <h3 className="font-medium text-amber-100">{goal.title}</h3>
                       <p className="text-sm text-slate-500">
-                        目標日: {format(new Date(goal.target_date), "yyyy年M月d日", { locale: ja })}
+                        目標日: {goal.target_date ? format(new Date(goal.target_date), "yyyy年M月d日", { locale: ja }) : '未設定'}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium text-amber-200">
-                        ¥{goal.current_amount?.toLocaleString()} / ¥{goal.target_amount?.toLocaleString()}
+                        ¥{Number(goal.current_amount).toLocaleString()} / ¥{Number(goal.target_amount).toLocaleString()}
                       </p>
                     </div>
                   </div>

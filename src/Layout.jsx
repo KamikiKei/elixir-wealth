@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { TrendingUp, PlusCircle, Brain, BarChart3 } from "lucide-react";
+import { TrendingUp, PlusCircle, Brain, BarChart3, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { Button } from "@/components/ui/Button.jsx";
 
 export default function Layout({ children }) {
   const location = useLocation();
   const [stats, setStats] = useState({ balance: 0, ratio: 0 });
+  const [userEmail, setUserEmail] = useState("USER");
 
-  // サイドバーに表示する統計データを取得
   useEffect(() => {
-    async function fetchQuickStats() {
+    async function getInitialData() {
+      // 1. ユーザー情報の取得
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserEmail(user.email);
+      }
+
+      // 2. 今月の統計データの取得
       const now = new Date();
       const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       
@@ -26,8 +34,13 @@ export default function Layout({ children }) {
         setStats({ balance, ratio: Math.max(ratio, 0) });
       }
     }
-    fetchQuickStats();
-  }, [location.pathname]); // ページ移動のたびに更新
+    getInitialData();
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Logout error:", error.message);
+  };
 
   const navigationItems = [
     { title: "ダッシュボード", url: "/", icon: BarChart3 },
@@ -36,17 +49,13 @@ export default function Layout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen flex w-full bg-[#0f1419] text-slate-200">
+    <div className="min-h-screen flex w-full bg-[#0f1419] text-slate-200 font-sans">
       <style>
         {`
-          :root {
-            --wealth-gold: #c9a961;
-          }
+          :root { --wealth-gold: #c9a961; }
           ::-webkit-scrollbar { width: 5px; }
           ::-webkit-scrollbar-track { background: #0f172a; }
           ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-          
-          /* 背景の微細なグラデーションとノイズ感 */
           .premium-bg {
             background: radial-gradient(circle at 0% 0%, #1e293b 0%, #0f172a 100%);
           }
@@ -71,9 +80,7 @@ export default function Layout({ children }) {
 
         <div className="flex-1 overflow-y-auto p-4 space-y-8">
           <div>
-            <p className="text-[10px] font-bold text-amber-500/40 uppercase tracking-[0.2em] px-4 mb-4">
-              MENU
-            </p>
+            <p className="text-[10px] font-bold text-amber-500/40 uppercase tracking-[0.2em] px-4 mb-4">MENU</p>
             <nav className="space-y-1">
               {navigationItems.map((item) => {
                 const isActive = location.pathname === item.url;
@@ -95,12 +102,10 @@ export default function Layout({ children }) {
             </nav>
           </div>
 
-          {/* クイック統計 - 動的データ連携 */}
-          <div>
-            <p className="text-[10px] font-bold text-amber-500/40 uppercase tracking-[0.2em] px-4 mb-4">
-              QUICK STATS
-            </p>
-            <div className="px-4 py-4 bg-slate-950/40 rounded-2xl border border-amber-900/10 space-y-4">
+          {/* クイック統計 */}
+          <div className="px-4">
+            <p className="text-[10px] font-bold text-amber-500/40 uppercase tracking-[0.2em] mb-4">QUICK STATS</p>
+            <div className="p-4 bg-slate-950/40 rounded-2xl border border-amber-900/10 space-y-4">
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="text-slate-500">今月の収支</span>
@@ -123,16 +128,30 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        <div className="border-t border-amber-900/20 p-4 bg-slate-900/40">
+        {/* ユーザーセクション & ログアウト */}
+        <div className="border-t border-amber-900/20 p-4 bg-slate-900/40 space-y-3">
           <div className="flex items-center gap-3 px-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <span className="text-slate-900 font-black text-xs">U</span>
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/20 flex-shrink-0">
+              <span className="text-slate-900 font-black text-xs">
+                {userEmail[0].toUpperCase()}
+              </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-amber-100 text-sm truncate">USER</p>
-              <p className="text-[10px] text-slate-500 truncate uppercase font-bold tracking-tighter">Asset Maximization</p>
+              <p className="font-bold text-amber-100 text-xs truncate uppercase tracking-tighter">
+                {userEmail.split('@')[0]}
+              </p>
+              <p className="text-[9px] text-slate-500 truncate font-medium">PREMIUM MEMBER</p>
             </div>
           </div>
+          
+          <Button 
+            variant="ghost" 
+            onClick={handleLogout}
+            className="w-full justify-start gap-3 text-slate-400 hover:text-rose-400 hover:bg-rose-400/10 h-9 px-2 transition-all"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="text-xs font-bold">ログアウト</span>
+          </Button>
         </div>
       </aside>
 
