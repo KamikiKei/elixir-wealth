@@ -1,0 +1,16 @@
+# 依存ライブラリ（巨大なので無視）
+node_modules/
+
+# ビルド成果物
+dist/
+
+# 環境変数
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OSのキャッシュファイル
+.DS_Store
+Thumbs.db
