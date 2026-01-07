@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./Layout";
-import Dashboard from "./pages/Dashboard";
-import addTransaction from "/pages/addTransaction";
-import luminousChat from "/pages/luminousChat"; 
+import Layout from "@/Layout";
+import Dashboard from "@/pages/Dashboard.jsx";
+import addTransaction from "@/pages/addTransaction";
+import luminousChat from "@/pages/luminousChat"; 
 
 function App() {
   return (
