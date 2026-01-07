@@ -1,9 +1,9 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, startOfMonth, subMonths } from "date-fns";
 import { ja } from "date-fns/locale";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton.jsx";
 import { BarChart3 } from "lucide-react";
 
 export default function MonthlyChart({ transactions, isLoading }) {

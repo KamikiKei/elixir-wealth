@@ -1,12 +1,12 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
+import { Badge } from "@/components/ui/badge.jsx";
+import { Button } from "@/components/ui/button.jsx";
 import { ArrowUp, ArrowDown, Receipt, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { Link } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton.jsx";
 
 const categoryLabels = {
   salary: "給与", investment: "投資", business: "事業", other_income: "その他収入",

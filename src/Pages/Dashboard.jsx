@@ -3,8 +3,6 @@ import { supabase } from "@/lib/supabaseClient"; // Supabase連携に修正
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import { ja } from "date-fns/locale";
 
-// インポートパスを現在のディレクトリ構成 (@/components/...) に修正
-// 全て @/components/... に書き換えてください
 import WealthOverview from "../Components/dashboard/WealthOverview.jsx";
 import MonthlyChart from "../Components/dashboard/MonthlyChart.jsx";  
 import RecentTransactions from "../Components/dashboard/RecentTransactions.jsx";
@@ -21,7 +19,7 @@ export default function Dashboard() {
     loadData();
   }, []);
 
-  // Supabaseからデータを取得するように書き換え
+  // Supabaseからデータを取得する
   const loadData = async () => {
     setIsLoading(true);
     try {

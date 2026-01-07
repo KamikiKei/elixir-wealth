@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import Dashboard from "./Pages/Dashboard";
 import AddTransaction from "./Pages/AddTransaction";
-import LuminousChat from "./Pages/LuminousChat"; // これがあるなら追加！
+import LuminousChat from "./Pages/LuminousChat"; 
 
 function App() {
   return (
@@ -13,7 +13,6 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/add" element={<AddTransaction />} />
           <Route path="/chat" element={<LuminousChat />} />
-          {/* AIAdvisor.jsがまだなら、一旦LuminousChatを表示させるのもアリです */}
           <Route path="/advisor" element={<LuminousChat />} /> 
         </Routes>
       </Layout>

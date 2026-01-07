@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.jsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, Brain, Target, TrendingUp, Send, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function AIAdvisor() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("analysis"); // "analysis" か "chat"
+  const [mode, setMode] = useState("analysis");
   const [mindsetType, setMindsetType] = useState("conservative_investor");
   const [txCount, setTxCount] = useState(0);
   const [messages, setMessages] = useState([]);
@@ -97,7 +97,7 @@ export default function AIAdvisor() {
     );
   }
 
-  // 以下、チャットモードの表示（省略せずに元のチャットUIをプレミアム化して統合）
+  // 以下、チャットモードの表示
   return (
     <div className="max-w-4xl mx-auto space-y-4 animate-in slide-in-from-bottom-4 duration-500">
       <Button variant="ghost" onClick={() => setMode("analysis")} className="text-slate-400">

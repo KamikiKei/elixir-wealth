@@ -1,11 +1,11 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
+import { Progress } from "@/components/ui/progress.jsx";
+import { Button } from "@/components/ui/button.jsx";
 import { Target, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton.jsx";
 
 export default function SavingsGoals({ goals, isLoading }) {
   if (isLoading) {

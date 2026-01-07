@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.jsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Sparkles, TrendingUp, AlertCircle, RefreshCw, Target } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton.jsx";
 
 export default function AIAdvisor() {
   const [transactions, setTransactions] = useState([]);
@@ -50,17 +50,10 @@ export default function AIAdvisor() {
           return acc;
         }, {});
 
-      // 実際にはここで Edge Functions を呼び出しますが、
-      // 以前作成した LLM 呼び出しロジックをシミュレート、または Supabase Function を叩きます。
-      // ここでは UI 確認のため、元のプロンプト構造を維持します。
-      
       const prompt = `家計データを分析し、資産形成アドバイスを生成してください。
       収入: ${totalIncome}円, 支出: ${totalExpenses}円, 
       カテゴリ: ${JSON.stringify(categoryBreakdown)}`;
 
-      // --- OpenAI / Supabase Edge Function 呼び出し ---
-      // ※ もし chat ページと同じ API を使うならここに fetch を書きます
-      // 下記はデモ用の自動生成ロジック例です
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/luminous-chat`, {
         method: 'POST',
         headers: {

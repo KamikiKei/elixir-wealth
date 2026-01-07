@@ -1,5 +1,5 @@
 # 依存ライブラリ（巨大なので無視）
-node_modules/
+node_modules
 
 # ビルド成果物
 dist/

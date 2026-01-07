@@ -1,7 +1,7 @@
 import React from "react";
 import { MessageCircle, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card.jsx";
 
 export default function LuminousChatButton() {
   return (
