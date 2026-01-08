@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 // スクロールエリアは標準のdivでも代用可能ですが、パスを合わせています
-import { ScrollArea } from "@/components/ui/scroll-area"; 
+import { ScrollArea } from "@/components/ui/Scroll-area"; 
 import { ArrowLeft, Sparkles, Send, CheckCircle2, Circle, Loader2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
