@@ -1,0 +1,47 @@
+{
+  "name": "WorkflowTask",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "description": "関連プロジェクトID"
+    },
+    "title": {
+      "type": "string",
+      "description": "タスク名"
+    },
+    "description": {
+      "type": "string",
+      "description": "タスク詳細"
+    },
+    "order": {
+      "type": "number",
+      "description": "実行順序"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed"
+      ],
+      "default": "pending",
+      "description": "タスクステータス"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "description": "優先度"
+    }
+  },
+  "required": [
+    "project_id",
+    "title",
+    "order"
+  ]
+}

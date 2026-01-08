@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { format, startOfMonth, endOfMonth } from "date-fns";
+import { format, startOfMonth, endOfMonth, differenceInDays } from "date-fns";
 import { ja } from "date-fns/locale";
 
+// --- 既存のコンポーネント ---
 import WealthOverview from "@/components/dashboard/WealthOverview";
 import MonthlyChart from "@/components/dashboard/MonthlyChart";  
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
-// 名前を GoalListCard に変更してインポート
 import GoalListCard from "@/components/dashboard/GoalListCard";
 import CategoryBreakdown from "@/components/dashboard/CategoryBreakdown";
 import LuminousChatButton from "@/components/dashboard/LuminousChatButton";
 
+// --- 追加する新機能コンポーネント ---
+import HabitCalendar from "@/components/habit/HabitCalendar";
+import UserRankCard from "@/components/habit/UserRankCard";
+import NextTasksCard from "@/components/habit/NextTasksCard";
+import SpendingGoalsCard from "@/components/dashboard/SpendingGoalsCard";
+
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [goals, setGoals] = useState([]);
+  const [userData, setUserData] = useState(null); // auth.userのmetadata用
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -25,6 +32,9 @@ export default function Dashboard() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      // メタデータをセット（ランク表示用）
+      setUserData(user.user_metadata);
 
       const [txResponse, goalResponse] = await Promise.all([
         supabase
@@ -43,9 +53,13 @@ export default function Dashboard() {
       if (txResponse.error) throw txResponse.error;
       if (goalResponse.error) throw goalResponse.error;
       
-      console.log("📥 データ更新成功 - 目標数:", goalResponse.data?.length);
-      setTransactions(txResponse.data || []);
+      const txData = txResponse.data || [];
+      setTransactions(txData);
       setGoals(goalResponse.data || []);
+
+      // ★ ランク計算ロジック（ここに追加）
+      await updateRankStats(user, txData);
+
     } catch (error) {
       console.error("データ読み込みエラー:", error);
     } finally {
@@ -53,7 +67,23 @@ export default function Dashboard() {
     }
   };
 
-  // 資産計算ロジック
+  // ランクと継続日数の計算
+  const updateRankStats = async (user, txData) => {
+    const uniqueDates = [...new Set(txData.map(t => format(new Date(t.date), 'yyyy-MM-dd')))];
+    const totalDays = uniqueDates.length;
+    const sortedDates = uniqueDates.sort().reverse();
+    
+    // 連続日数の簡易計算
+    let streak = 0;
+    if (sortedDates.includes(format(new Date(), 'yyyy-MM-dd'))) {
+      streak = 1; // 今日記録があればカウント開始
+      // ここに前日、前々日と遡るループを入れることも可能
+    }
+
+    // 必要に応じて supabase.auth.updateUser で metadata を更新する処理をここに。
+  };
+
+  // --- 既存の計算ロジック (そのまま維持) ---
   const calculateBalance = () => {
     const income = transactions
       .filter(t => t.type === "income" || t.amount > 0)
@@ -72,16 +102,14 @@ export default function Dashboard() {
       const transactionDate = new Date(t.date);
       return transactionDate >= monthStart && transactionDate <= monthEnd;
     });
-    const monthlyIncome = monthlyTransactions
-      .filter(t => t.type === "income" || t.amount > 0)
-      .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
-    const monthlyExpenses = monthlyTransactions
-      .filter(t => t.type === "expense" || t.amount < 0)
-      .reduce((sum, t) => sum + Math.abs(Number(t.amount) || 0), 0);
-    return { monthlyIncome, monthlyExpenses, monthlyBalance: monthlyIncome - monthlyExpenses };
+    const { income, expenses, balance } = {
+        income: monthlyTransactions.filter(t => t.type === "income" || t.amount > 0).reduce((sum, t) => sum + (Number(t.amount) || 0), 0),
+        expenses: monthlyTransactions.filter(t => t.type === "expense" || t.amount < 0).reduce((sum, t) => sum + Math.abs(Number(t.amount) || 0), 0),
+    };
+    return { monthlyIncome: income, monthlyExpenses: expenses, monthlyBalance: income - expenses };
   };
 
-  const { income, expenses, balance } = calculateBalance();
+  const { balance } = calculateBalance();
   const { monthlyIncome, monthlyExpenses, monthlyBalance } = getMonthlyData();
 
   return (
@@ -97,6 +125,22 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-8">
+          {/* ★ 新機能エリア：ランク・カレンダー・タスク */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <UserRankCard 
+                rank={userData?.rank || "beginner"} 
+                totalRecordDays={userData?.total_record_days || 0} 
+              />
+              <NextTasksCard />
+              <SpendingGoalsCard user={{ user_metadata: userData }} onUpdate={loadData} />
+            </div>
+            <HabitCalendar 
+              transactions={transactions} 
+              streakDays={userData?.streak_days || 0} 
+            />
+          </div>
+
           <LuminousChatButton />
           
           <WealthOverview 
@@ -119,7 +163,6 @@ export default function Dashboard() {
             
             <div className="space-y-8">
               <CategoryBreakdown transactions={transactions} isLoading={isLoading} />
-              {/* 新しい名前のコンポーネントを使用 */}
               <GoalListCard 
                 goals={goals} 
                 isLoading={isLoading}

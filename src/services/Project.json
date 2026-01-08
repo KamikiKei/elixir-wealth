@@ -1,0 +1,38 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "プロジェクト名"
+    },
+    "description": {
+      "type": "string",
+      "description": "プロジェクト概要"
+    },
+    "target_income": {
+      "type": "number",
+      "description": "目標収入額"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "planning",
+      "description": "プロジェクトステータス"
+    },
+    "workflow_generated": {
+      "type": "boolean",
+      "default": false,
+      "description": "ワークフローが生成されたか"
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

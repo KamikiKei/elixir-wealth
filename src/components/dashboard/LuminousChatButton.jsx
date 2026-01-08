@@ -3,7 +3,7 @@ import { MessageCircle, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/Card";
 
-export default function luminousChatButton() {
+export default function uminousChatButton() {
   return (
     <Link to="/advisor" className="block transition-transform hover:scale-[1.01] active:scale-[0.99]">
       <Card className="bg-gradient-to-r from-amber-600/20 via-amber-500/10 to-transparent border-amber-500/30 overflow-hidden relative group">

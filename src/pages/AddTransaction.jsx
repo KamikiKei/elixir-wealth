@@ -11,11 +11,23 @@ import { useNavigate } from "react-router-dom";
 
 // カテゴリラベル定義
 const categoryLabels = {
-  salary: "給与・賞与", investment: "投資収益", business: "事業収入", other_income: "その他収入",
-  food: "食費", transportation: "交通費", housing: "住居費", utilities: "光熱費", entertainment: "娯楽費", 
-  shopping: "買い物", healthcare: "医療費", education: "教育費", insurance: "保険", other_expense: "その他支出"
+  // 収入
+  salary: "給与・賞与",
+  investment: "投資収益",
+  business: "事業収入",
+  other_income: "その他収入",
+  // 支出
+  food: "食費",
+  transportation: "交通費",
+  housing: "住居費",
+  utilities: "光熱費",
+  entertainment: "娯楽費", 
+  shopping: "買い物",
+  healthcare: "医療費",
+  education: "教育費",
+  insurance: "保険",
+  other_expense: "その他支出"
 };
-
 export default function addTransaction() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -37,35 +49,43 @@ export default function addTransaction() {
   const expenseCategories = ["food", "transportation", "housing", "utilities", "entertainment", "shopping", "healthcare", "education", "insurance", "other_expense"];
 
   // フォーム送信（Supabaseへ保存）
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setStatusMessage({ type: "", text: "" });
+  // --- src/pages/AddTransaction.jsx の handleSubmit を修正 ---
 
-    try {
-      const { error } = await supabase
-        .from("transactions")
-        .insert([
-          {
-            type: formData.type,
-            amount: formData.type === "expense" ? -Math.abs(parseFloat(formData.amount)) : Math.abs(parseFloat(formData.amount)),
-            category: formData.category,
-            title: formData.title || formData.description,
-            date: formData.date
-          }
-        ]);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setStatusMessage({ type: "", text: "" });
 
-      if (error) throw error;
+  try {
+    // 1. 現在のログインユーザー情報を取得
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("ユーザー認証に失敗しました。再度ログインしてください。");
 
-      setStatusMessage({ type: "success", text: "取引を正常に保存しました。ダッシュボードに戻ります..." });
-      setTimeout(() => navigate("/"), 1500);
-    } catch (error) {
-      console.error("保存失敗:", error);
-      setStatusMessage({ type: "error", text: "保存に失敗しました。入力内容を確認してください。" });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    // 2. user_id を含めて insert を実行
+    const { error } = await supabase
+      .from("transactions")
+      .insert([
+        {
+          user_id: user.id, // 必須
+          type: formData.type,
+          amount: formData.type === "expense" ? -Math.abs(parseFloat(formData.amount)) : Math.abs(parseFloat(formData.amount)),
+          category: formData.category,
+          title: formData.title || formData.description,
+          date: formData.date
+       }
+      ]);
+
+    if (error) throw error;
+
+    setStatusMessage({ type: "success", text: "取引を正常に保存しました。ダッシュボードに戻ります..." });
+    setTimeout(() => navigate("/"), 1500);
+  } catch (error) {
+    console.error("保存失敗:", error);
+    setStatusMessage({ type: "error", text: error.message || "保存に失敗しました。" });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // 画像をBase64に変換
   const toBase64 = file => new Promise((resolve, reject) => {
@@ -85,9 +105,12 @@ export default function addTransaction() {
 
     try {
       const base64Image = await toBase64(file);
-      const prompt = `このレシート画像を解析し、JSON形式で抽出してください: amount (数値), date (YYYY-MM-DD), store_name (店舗名), category (food, shopping, entertainment, other_expenseから選択), items (商品名の要約)`;
-
-      const response = await fetch("/api/analyze", {
+      const prompt = `このレシート画像を解析し、JSON形式で抽出してください。
+                categoryは、必ず以下のいずれかの【英単語】のみを選択してください。
+                日本語は使用しないでください。
+                選択肢: (food, transportation, housing, utilities, entertainment, shopping, healthcare, education, insurance, other_expense)`;
+      
+                const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -100,11 +123,28 @@ export default function addTransaction() {
       const data = typeof result === 'string' ? JSON.parse(result) : result;
 
       if (data) {
+        // AIが日本語で返してきた場合を考慮したマッピング
+        const categoryMapping = {
+          "食費": "food",
+          "交通費": "transportation",
+          "住居費": "housing",
+          "光熱費": "utilities",
+          "娯楽費": "entertainment",
+          "買い物": "shopping",
+          "医療費": "healthcare",
+          "教育費": "education",
+          "保険": "insurance",
+          "その他支出": "other_expense"
+        };
+
+        // マッピングを使用して英語キーに変換
+        const finalCategory = categoryMapping[data.category] || data.category || "other_expense";
+
         setFormData({
           ...formData,
           type: "expense",
           amount: data.amount?.toString() || "",
-          category: data.category || "other_expense",
+          category: finalCategory, // 正しくマッピングされた英語キーをセット
           title: data.store_name || data.items || "",
           date: data.date || new Date().toISOString().split('T')[0]
         });

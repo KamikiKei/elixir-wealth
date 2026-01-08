@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient"; // 追加
+import { supabase } from "@/lib/supabaseClient";
 import Layout from "@/Layout";
 import Dashboard from "@/pages/Dashboard.jsx";
 import AddTransaction from "@/pages/AddTransaction.jsx";
 import LuminousChat from "@/pages/LuminousChat.jsx"; 
-import Auth from "@/pages/Auth.jsx"; // 追加
+import Auth from "@/pages/Auth.jsx";
+
+// ★ ここから下を忘れずに追加してください！
+import Projects from "@/pages/Projects.jsx"; 
+import ProjectDetail from "@/pages/ProjectDetail.jsx";
+import AIAdvisor from "@/pages/AIAdvisor.jsx"; // もし AIAdvisor.jsx という名前ならこれ
 
 function App() {
   const [session, setSession] = useState(null);
@@ -42,9 +47,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/add" element={<AddTransaction />} />
-          <Route path="/chat" element={<LuminousChat />} />
-          <Route path="/advisor" element={<LuminousChat />} /> 
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/detail" element={<ProjectDetail />} />
+          <Route path="/advisor" element={<AIAdvisor />} />
         </Routes>
       </Layout>
     </Router>
