@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { getGeminiResponse } from "@/lib/gemini";
+import { getGeminiResponse } from "@/lib/Gemini";
 import { supabase } from "@/lib/supabaseClient"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
