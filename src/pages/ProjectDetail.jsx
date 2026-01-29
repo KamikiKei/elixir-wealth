@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { getGeminiResponse } from "@/lib/gemini";
 import { supabase } from "@/lib/supabaseClient"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -64,19 +65,13 @@ export default function ProjectDetail() {
   // ★ 修正: AIワークフロー生成ロジック (Edge Functions や API 経由を想定)
   const generateWorkflow = async () => {
     setIsLoading(true);
-    try {
-      // 本来はここで OpenAI API 等を叩きます。
-      // 今回はシミュレーションとして、雛形を作成するロジックにします。
-      // 実際には supabase.functions.invoke("generate-workflow", ...) 等を使います。
-      
-      alert("AIによるワークフロー生成を開始します（API連携が必要です）");
-
-      // 仮のタスクデータ（実際の運用ではAIのレスポンスを入れる）
-      const dummyTasks = [
-        { title: "市場リサーチ", description: "競合他社の分析とターゲット選定", priority: "high", order: 1 },
-        { title: "初期設計", description: "サービスの基本コンセプト決定", priority: "high", order: 2 },
-        { title: "集客プロモーション", description: "SNSを活用した認知拡大", priority: "medium", order: 3 }
-      ];
+  try {
+    const prompt = `${project.title}（${project.description}）を成功させるタスクを5つ、JSON形式で提案して。`;
+    const responseText = await getGeminiResponse(prompt);
+    
+    // Geminiが返したテキストをJSONとして読み込む
+    const cleanJson = responseText.replace(/```json|```/g, "").trim();
+    const dummyTasks = JSON.parse(cleanJson);
 
       const tasksToCreate = dummyTasks.map(task => ({
         ...task,
@@ -97,23 +92,27 @@ export default function ProjectDetail() {
     }
   };
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  // sendMessageの中身をこれに差し替え
+const sendMessage = async () => {
+  if (!input.trim() || isLoading) return;
 
-    const userMessage = input.trim();
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-    setInput("");
-    setIsLoading(true);
+  const userMessage = input.trim();
+  setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+  setInput("");
+  setIsLoading(true);
 
-    // ★ ここでAIアドバイザーと通信するロジックを入れます。
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        role: "assistant", 
-        content: "承知いたしました。その戦略を進めるためには、まず具体的なターゲットの悩み（ペインポイント）を深く掘り下げることが重要です。まずは最初のタスクに集中しましょう。" 
-      }]);
-      setIsLoading(false);
-    }, 1000);
-  };
+  try {
+    // ★ ここでGeminiを呼び出す
+    const prompt = `プロジェクト「${project.title}」について相談です：${userMessage}`;
+    const aiText = await getGeminiResponse(prompt); 
+    
+    setMessages(prev => [...prev, { role: "assistant", content: aiText }]);
+  } catch (error) {
+    console.error("AI Error:", error);
+    setMessages(prev => [...prev, { role: "assistant", content: "エラーが発生しました。" }]);
+  }
+  setIsLoading(false);
+};
 
   const toggleTaskStatus = async (task) => {
     const newStatus = task.status === "completed" ? "pending" : "completed";

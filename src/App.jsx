@@ -6,8 +6,6 @@ import Dashboard from "@/pages/Dashboard.jsx";
 import AddTransaction from "@/pages/AddTransaction.jsx";
 import LuminousChat from "@/pages/LuminousChat.jsx"; 
 import Auth from "@/pages/Auth.jsx";
-
-// ★ ここから下を忘れずに追加してください！
 import Projects from "@/pages/Projects.jsx"; 
 import ProjectDetail from "@/pages/ProjectDetail.jsx";
 import AIAdvisor from "@/pages/AIAdvisor.jsx"; // もし AIAdvisor.jsx という名前ならこれ

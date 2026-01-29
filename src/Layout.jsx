@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { TrendingUp, PlusCircle, Brain, BarChart3, LogOut, ChevronLeft, Menu, Rocket, Target } from "lucide-react"; // アイコン追加
+import { TrendingUp, PlusCircle, Brain, BarChart3, LogOut, ChevronLeft, Menu, Rocket, Target } from "lucide-react"; 
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/Button.jsx";
-// ★新機能コンポーネントのインポート
 import UserRankCard from "@/components/habit/UserRankCard";
 import HabitCalendar from "@/components/habit/HabitCalendar";
 
@@ -12,8 +11,6 @@ export default function Layout({ children }) {
   const [stats, setStats] = useState({ balance: 0, ratio: 0 });
   const [userEmail, setUserEmail] = useState("USER");
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
-  // ★新機能用の状態
   const [userData, setUserData] = useState(null);
   const [transactions, setTransactions] = useState([]);
 
